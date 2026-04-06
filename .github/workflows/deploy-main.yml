@@ -32,7 +32,16 @@ jobs:
       - name: Instalar Railway CLI
         run: npm install -g @railway/cli
 
-      - name: Deploy para Railway (production)
-        run: railway up --environment production --detach
+      - name: Validar secrets do Railway
+        run: |
+          test -n "$RAILWAY_TOKEN"
+          test -n "$RAILWAY_SERVICE"
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_PROD }}
+          RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE_PROD }}
+
+      - name: Deploy para Railway (production)
+        run: railway up --service "$RAILWAY_SERVICE" --environment production --ci
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_PROD }}
+          RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE_PROD }}

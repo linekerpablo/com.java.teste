@@ -4,9 +4,15 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.ForwardedHeaderFilter;
 
 @Configuration
 public class OpenApiConfig {
+
+        @Bean
+        public ForwardedHeaderFilter forwardedHeaderFilter() {
+                return new ForwardedHeaderFilter();
+        }
 
     @Bean
     public OpenAPI personApiOpenAPI() {
