@@ -36,7 +36,7 @@ class GetPersonAgeUseCaseTest {
 
         when(personRepository.findById(1L)).thenReturn(Optional.of(person));
 
-        long resultado = getPersonAgeUseCase.execute(1L, AgeOutputFormat.days);
+        long resultado = getPersonAgeUseCase.execute(1L, AgeOutputFormat.DAYS);
 
         assertThat(resultado).isEqualTo(100L);
         verify(personRepository).findById(1L);
@@ -50,7 +50,7 @@ class GetPersonAgeUseCaseTest {
 
         when(personRepository.findById(1L)).thenReturn(Optional.of(person));
 
-        long resultado = getPersonAgeUseCase.execute(1L, AgeOutputFormat.months);
+        long resultado = getPersonAgeUseCase.execute(1L, AgeOutputFormat.MONTHS);
 
         assertThat(resultado).isEqualTo(36L);
         verify(personRepository).findById(1L);
@@ -64,7 +64,7 @@ class GetPersonAgeUseCaseTest {
 
         when(personRepository.findById(1L)).thenReturn(Optional.of(person));
 
-        long resultado = getPersonAgeUseCase.execute(1L, AgeOutputFormat.years);
+        long resultado = getPersonAgeUseCase.execute(1L, AgeOutputFormat.YEARS);
 
         assertThat(resultado).isEqualTo(22L);
         verify(personRepository).findById(1L);
@@ -75,7 +75,7 @@ class GetPersonAgeUseCaseTest {
     void deveLancarExcecaoQuandoIdNaoExiste() {
         when(personRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> getPersonAgeUseCase.execute(99L, AgeOutputFormat.years))
+        assertThatThrownBy(() -> getPersonAgeUseCase.execute(99L, AgeOutputFormat.YEARS))
                 .isInstanceOf(PersonNotFoundException.class)
                 .hasMessageContaining("99");
 

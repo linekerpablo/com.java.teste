@@ -34,8 +34,8 @@ public class GetPersonSalaryUseCase {
         BigDecimal salario = calcularSalario(anosNaEmpresa);
 
         return switch (output) {
-            case full -> salario.setScale(2, RoundingMode.CEILING);
-            case min -> salario.divide(SALARIO_MINIMO, 2, RoundingMode.CEILING);
+            case FULL -> salario.setScale(2, RoundingMode.CEILING);
+            case MIN -> salario.divide(SALARIO_MINIMO, 2, RoundingMode.CEILING);
         };
     }
 
