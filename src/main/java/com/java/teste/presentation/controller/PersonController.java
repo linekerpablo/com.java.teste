@@ -3,9 +3,11 @@ package com.java.teste.presentation.controller;
 import com.java.teste.application.usecase.CreatePersonUseCase;
 import com.java.teste.application.usecase.DeletePersonUseCase;
 import com.java.teste.application.usecase.FindPersonByIdUseCase;
+import com.java.teste.application.usecase.GetPersonAgeUseCase;
 import com.java.teste.application.usecase.ListPersonsUseCase;
 import com.java.teste.application.usecase.PatchPersonUseCase;
 import com.java.teste.application.usecase.UpdatePersonUseCase;
+import com.java.teste.domain.model.AgeOutputFormat;
 import com.java.teste.presentation.dto.PersonPatchRequest;
 import com.java.teste.presentation.dto.PersonRequest;
 import com.java.teste.presentation.dto.PersonResponse;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -33,19 +36,22 @@ public class PersonController {
     private final UpdatePersonUseCase updatePersonUseCase;
     private final PatchPersonUseCase patchPersonUseCase;
     private final FindPersonByIdUseCase findPersonByIdUseCase;
+    private final GetPersonAgeUseCase getPersonAgeUseCase;
 
     public PersonController(ListPersonsUseCase listPersonsUseCase,
                             CreatePersonUseCase createPersonUseCase,
                             DeletePersonUseCase deletePersonUseCase,
                             UpdatePersonUseCase updatePersonUseCase,
                             PatchPersonUseCase patchPersonUseCase,
-                            FindPersonByIdUseCase findPersonByIdUseCase) {
+                            FindPersonByIdUseCase findPersonByIdUseCase,
+                            GetPersonAgeUseCase getPersonAgeUseCase) {
         this.listPersonsUseCase = listPersonsUseCase;
         this.createPersonUseCase = createPersonUseCase;
         this.deletePersonUseCase = deletePersonUseCase;
         this.updatePersonUseCase = updatePersonUseCase;
         this.patchPersonUseCase = patchPersonUseCase;
         this.findPersonByIdUseCase = findPersonByIdUseCase;
+        this.getPersonAgeUseCase = getPersonAgeUseCase;
     }
 
     @GetMapping
@@ -60,6 +66,11 @@ public class PersonController {
     public ResponseEntity<PersonResponse> findById(@PathVariable Long id) {
         PersonResponse response = PersonResponse.from(findPersonByIdUseCase.execute(id));
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/age")
+    public ResponseEntity<Long> getAge(@PathVariable Long id, @RequestParam AgeOutputFormat output) {
+        return ResponseEntity.ok(getPersonAgeUseCase.execute(id, output));
     }
 
     @PostMapping
