@@ -1,3 +1,6 @@
 spring:
   application:
     name: teste
+
+server:
+  port: ${PORT:8080}
