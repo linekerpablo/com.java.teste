@@ -7,6 +7,8 @@ COPY mvnw mvnw.cmd ./
 COPY .mvn .mvn
 COPY pom.xml ./
 
+RUN chmod +x mvnw
+
 # Baixa dependências em camada separada (cache)
 RUN ./mvnw dependency:go-offline -q
 

@@ -1,6 +1,5 @@
 .git
 .githooks
-.mvn/wrapper/maven-wrapper.jar
 target/
 *.md
 docker-compose*.yml
