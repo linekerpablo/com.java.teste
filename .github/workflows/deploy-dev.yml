@@ -2,7 +2,7 @@ name: CI/CD — Desenvolvimento
 
 on:
   push:
-    branches: [dev]
+    branches: [dev, 'feature/**']
 
 jobs:
   test:
@@ -35,4 +35,4 @@ jobs:
       - name: Deploy para Railway (development)
         run: railway up --environment development --detach
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_DEV }}
