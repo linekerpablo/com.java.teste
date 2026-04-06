@@ -1,1 +1,7 @@
-spring.application.name=teste
+spring:
+  application:
+    name: teste
+
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework

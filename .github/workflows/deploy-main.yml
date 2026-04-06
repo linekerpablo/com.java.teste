@@ -1,0 +1,47 @@
+name: CI/CD — Produção
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    name: Testes e cobertura
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Executar testes e verificar cobertura
+        run: mvn verify --no-transfer-progress
+
+  deploy:
+    name: Deploy Railway (production)
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Validar secrets do Railway
+        run: |
+          test -n "$RAILWAY_TOKEN"
+          test -n "$RAILWAY_SERVICE"
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_PROD }}
+          RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE_PROD }}
+
+      - name: Deploy para Railway (production)
+        run: railway up --service "$RAILWAY_SERVICE" --environment production --ci
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_PROD }}
+          RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE_PROD }}
