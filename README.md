@@ -1,6 +1,6 @@
 # Person API
 
-API REST de gerenciamento de pessoas desenvolvida com Spring Boot 4 e Java 25.
+API REST de gerenciamento de pessoas desenvolvida com Spring Boot 4 e Java 21.
 
 ---
 
@@ -14,8 +14,33 @@ API REST de gerenciamento de pessoas desenvolvida com Spring Boot 4 e Java 25.
 
 ## Executar a aplicação
 
+### Localmente
+
 ```bash
 mvn spring-boot:run
+```
+
+### Via Docker
+
+**Build da imagem:**
+
+```bash
+docker build -t person-api:local .
+```
+
+**Subir o container:**
+
+```bash
+docker run -d \
+  --name person-api \
+  -p 8080:8080 \
+  person-api:local
+```
+
+**Parar e remover:**
+
+```bash
+docker stop person-api && docker rm person-api
 ```
 
 Swagger UI disponível em: http://localhost:8080/swagger-ui.html
