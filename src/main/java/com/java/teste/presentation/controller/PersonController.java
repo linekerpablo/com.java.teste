@@ -2,6 +2,7 @@ package com.java.teste.presentation.controller;
 
 import com.java.teste.application.usecase.CreatePersonUseCase;
 import com.java.teste.application.usecase.DeletePersonUseCase;
+import com.java.teste.application.usecase.FindPersonByIdUseCase;
 import com.java.teste.application.usecase.ListPersonsUseCase;
 import com.java.teste.application.usecase.PatchPersonUseCase;
 import com.java.teste.application.usecase.UpdatePersonUseCase;
@@ -31,17 +32,20 @@ public class PersonController {
     private final DeletePersonUseCase deletePersonUseCase;
     private final UpdatePersonUseCase updatePersonUseCase;
     private final PatchPersonUseCase patchPersonUseCase;
+    private final FindPersonByIdUseCase findPersonByIdUseCase;
 
     public PersonController(ListPersonsUseCase listPersonsUseCase,
                             CreatePersonUseCase createPersonUseCase,
                             DeletePersonUseCase deletePersonUseCase,
                             UpdatePersonUseCase updatePersonUseCase,
-                            PatchPersonUseCase patchPersonUseCase) {
+                            PatchPersonUseCase patchPersonUseCase,
+                            FindPersonByIdUseCase findPersonByIdUseCase) {
         this.listPersonsUseCase = listPersonsUseCase;
         this.createPersonUseCase = createPersonUseCase;
         this.deletePersonUseCase = deletePersonUseCase;
         this.updatePersonUseCase = updatePersonUseCase;
         this.patchPersonUseCase = patchPersonUseCase;
+        this.findPersonByIdUseCase = findPersonByIdUseCase;
     }
 
     @GetMapping
@@ -49,6 +53,12 @@ public class PersonController {
         List<PersonResponse> response = listPersonsUseCase.execute().stream()
                 .map(PersonResponse::from)
                 .toList();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PersonResponse> findById(@PathVariable Long id) {
+        PersonResponse response = PersonResponse.from(findPersonByIdUseCase.execute(id));
         return ResponseEntity.ok(response);
     }
 
