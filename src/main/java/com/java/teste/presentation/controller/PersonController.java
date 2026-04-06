@@ -20,8 +20,8 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,6 +41,7 @@ import java.util.List;
 @Tag(name = "Pessoas", description = "Endpoints para gerenciamento de pessoas")
 @RestController
 @RequestMapping("/person")
+@RequiredArgsConstructor
 public class PersonController {
 
     private final ListPersonsUseCase listPersonsUseCase;
@@ -52,33 +53,13 @@ public class PersonController {
     private final GetPersonAgeUseCase getPersonAgeUseCase;
     private final GetPersonSalaryUseCase getPersonSalaryUseCase;
 
-    public PersonController(ListPersonsUseCase listPersonsUseCase,
-                            CreatePersonUseCase createPersonUseCase,
-                            DeletePersonUseCase deletePersonUseCase,
-                            UpdatePersonUseCase updatePersonUseCase,
-                            PatchPersonUseCase patchPersonUseCase,
-                            FindPersonByIdUseCase findPersonByIdUseCase,
-                            GetPersonAgeUseCase getPersonAgeUseCase,
-                            GetPersonSalaryUseCase getPersonSalaryUseCase) {
-        this.listPersonsUseCase = listPersonsUseCase;
-        this.createPersonUseCase = createPersonUseCase;
-        this.deletePersonUseCase = deletePersonUseCase;
-        this.updatePersonUseCase = updatePersonUseCase;
-        this.patchPersonUseCase = patchPersonUseCase;
-        this.findPersonByIdUseCase = findPersonByIdUseCase;
-        this.getPersonAgeUseCase = getPersonAgeUseCase;
-        this.getPersonSalaryUseCase = getPersonSalaryUseCase;
-    }
-
     @Operation(
             summary = "Listar todas as pessoas",
             description = "Retorna a lista de todas as pessoas cadastradas, ordenadas alfabeticamente pelo nome."
     )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso",
-                    content = @Content(mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = PersonResponse.class))))
-    })
+    @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso",
+            content = @Content(mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = PersonResponse.class))))
     @GetMapping
     public ResponseEntity<List<PersonResponse>> listAll() {
         List<PersonResponse> response = listPersonsUseCase.execute().stream()
@@ -91,14 +72,12 @@ public class PersonController {
             summary = "Buscar pessoa por ID",
             description = "Retorna os dados de uma pessoa específica com base no ID informado."
     )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Pessoa encontrada",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PersonResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Pessoa não encontrada",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
-    })
+    @ApiResponse(responseCode = "200", description = "Pessoa encontrada",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = PersonResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Pessoa não encontrada",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)))
     @GetMapping("/{id}")
     public ResponseEntity<PersonResponse> findById(
             @Parameter(description = "ID da pessoa", example = "1", required = true)
@@ -111,17 +90,15 @@ public class PersonController {
             summary = "Calcular idade da pessoa",
             description = "Calcula a idade da pessoa na unidade especificada: `days` (dias), `months` (meses) ou `years` (anos)."
     )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Idade calculada com sucesso",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Long.class, example = "34"))),
-            @ApiResponse(responseCode = "400", description = "Unidade de saída inválida",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Pessoa não encontrada",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
-    })
+    @ApiResponse(responseCode = "200", description = "Idade calculada com sucesso",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Long.class, example = "34")))
+    @ApiResponse(responseCode = "400", description = "Unidade de saída inválida",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Pessoa não encontrada",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)))
     @GetMapping("/{id}/age")
     public ResponseEntity<Long> getAge(
             @Parameter(description = "ID da pessoa", example = "1", required = true)
@@ -145,17 +122,15 @@ public class PersonController {
                     O salário inicial é de R$ 1.558,00 e aumenta 18% ao ano, acrescido de R$ 500,00 de bônus por ano.
                     """
     )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Salário calculado com sucesso",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = BigDecimal.class, example = "3250.47"))),
-            @ApiResponse(responseCode = "400", description = "Formato de saída inválido",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Pessoa não encontrada",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
-    })
+    @ApiResponse(responseCode = "200", description = "Salário calculado com sucesso",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = BigDecimal.class, example = "3250.47")))
+    @ApiResponse(responseCode = "400", description = "Formato de saída inválido",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Pessoa não encontrada",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)))
     @GetMapping("/{id}/salary")
     public ResponseEntity<BigDecimal> getSalary(
             @Parameter(description = "ID da pessoa", example = "1", required = true)
@@ -176,14 +151,12 @@ public class PersonController {
                     - Se um `id` for informado e já existir, a requisição será rejeitada com `409 Conflict`.
                     """
     )
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Pessoa cadastrada com sucesso",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PersonResponse.class))),
-            @ApiResponse(responseCode = "409", description = "Já existe uma pessoa cadastrada com o ID informado",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
-    })
+    @ApiResponse(responseCode = "201", description = "Pessoa cadastrada com sucesso",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = PersonResponse.class)))
+    @ApiResponse(responseCode = "409", description = "Já existe uma pessoa cadastrada com o ID informado",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)))
     @PostMapping
     public ResponseEntity<PersonResponse> create(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -199,13 +172,11 @@ public class PersonController {
             summary = "Remover pessoa",
             description = "Remove do sistema a pessoa com o ID especificado."
     )
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Pessoa removida com sucesso",
-                    content = @Content),
-            @ApiResponse(responseCode = "404", description = "Pessoa não encontrada",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
-    })
+    @ApiResponse(responseCode = "204", description = "Pessoa removida com sucesso",
+            content = @Content)
+    @ApiResponse(responseCode = "404", description = "Pessoa não encontrada",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)))
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @Parameter(description = "ID da pessoa", example = "1", required = true)
@@ -218,14 +189,12 @@ public class PersonController {
             summary = "Atualizar pessoa completamente (PUT)",
             description = "Substitui todos os dados de uma pessoa existente pelos valores informados no corpo da requisição."
     )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Pessoa atualizada com sucesso",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PersonResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Pessoa não encontrada",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
-    })
+    @ApiResponse(responseCode = "200", description = "Pessoa atualizada com sucesso",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = PersonResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Pessoa não encontrada",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)))
     @PutMapping("/{id}")
     public ResponseEntity<PersonResponse> update(
             @Parameter(description = "ID da pessoa", example = "1", required = true)
@@ -243,14 +212,12 @@ public class PersonController {
             summary = "Atualizar pessoa parcialmente (PATCH)",
             description = "Atualiza apenas os campos informados da pessoa. Campos ausentes ou nulos no corpo da requisição são ignorados."
     )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Pessoa atualizada com sucesso",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PersonResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Pessoa não encontrada",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
-    })
+    @ApiResponse(responseCode = "200", description = "Pessoa atualizada com sucesso",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = PersonResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Pessoa não encontrada",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)))
     @PatchMapping("/{id}")
     public ResponseEntity<PersonResponse> patch(
             @Parameter(description = "ID da pessoa", example = "1", required = true)

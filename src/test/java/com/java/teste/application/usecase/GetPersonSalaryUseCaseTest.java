@@ -41,7 +41,7 @@ class GetPersonSalaryUseCaseTest {
 
         when(personRepository.findById(1L)).thenReturn(Optional.of(person));
 
-        BigDecimal resultado = getPersonSalaryUseCase.execute(1L, SalaryOutputFormat.full);
+        BigDecimal resultado = getPersonSalaryUseCase.execute(1L, SalaryOutputFormat.FULL);
 
         assertThat(resultado).isEqualByComparingTo(new BigDecimal("3259.36"));
         verify(personRepository).findById(1L);
@@ -56,7 +56,7 @@ class GetPersonSalaryUseCaseTest {
 
         when(personRepository.findById(1L)).thenReturn(Optional.of(person));
 
-        BigDecimal resultado = getPersonSalaryUseCase.execute(1L, SalaryOutputFormat.min);
+        BigDecimal resultado = getPersonSalaryUseCase.execute(1L, SalaryOutputFormat.MIN);
 
         assertThat(resultado).isEqualByComparingTo(new BigDecimal("2.51"));
         verify(personRepository).findById(1L);
@@ -70,7 +70,7 @@ class GetPersonSalaryUseCaseTest {
 
         when(personRepository.findById(2L)).thenReturn(Optional.of(person));
 
-        BigDecimal resultado = getPersonSalaryUseCase.execute(2L, SalaryOutputFormat.full);
+        BigDecimal resultado = getPersonSalaryUseCase.execute(2L, SalaryOutputFormat.FULL);
 
         assertThat(resultado).isEqualByComparingTo(new BigDecimal("1558.00"));
         verify(personRepository).findById(2L);
@@ -85,7 +85,7 @@ class GetPersonSalaryUseCaseTest {
 
         when(personRepository.findById(3L)).thenReturn(Optional.of(person));
 
-        BigDecimal resultado = getPersonSalaryUseCase.execute(3L, SalaryOutputFormat.full);
+        BigDecimal resultado = getPersonSalaryUseCase.execute(3L, SalaryOutputFormat.FULL);
 
         assertThat(resultado).isEqualByComparingTo(new BigDecimal("2338.44"));
         verify(personRepository).findById(3L);
@@ -96,7 +96,7 @@ class GetPersonSalaryUseCaseTest {
     void deveLancarExcecaoQuandoIdNaoExiste() {
         when(personRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> getPersonSalaryUseCase.execute(99L, SalaryOutputFormat.full))
+        assertThatThrownBy(() -> getPersonSalaryUseCase.execute(99L, SalaryOutputFormat.FULL))
                 .isInstanceOf(PersonNotFoundException.class)
                 .hasMessageContaining("99");
 

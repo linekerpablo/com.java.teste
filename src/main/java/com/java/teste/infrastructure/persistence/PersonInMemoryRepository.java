@@ -53,8 +53,7 @@ public class PersonInMemoryRepository implements PersonRepository {
 
     @Override
     public Person update(Person person) {
-        storage.put(person.getId(), person);
-        return person;
+        return save(person);
     }
 
     @Override

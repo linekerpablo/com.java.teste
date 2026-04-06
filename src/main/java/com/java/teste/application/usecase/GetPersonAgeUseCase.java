@@ -26,9 +26,9 @@ public class GetPersonAgeUseCase {
         LocalDate hoje = LocalDate.now();
 
         return switch (output) {
-            case days -> ChronoUnit.DAYS.between(dataNascimento, hoje);
-            case months -> ChronoUnit.MONTHS.between(dataNascimento, hoje);
-            case years -> ChronoUnit.YEARS.between(dataNascimento, hoje);
+            case DAYS -> ChronoUnit.DAYS.between(dataNascimento, hoje);
+            case MONTHS -> ChronoUnit.MONTHS.between(dataNascimento, hoje);
+            case YEARS -> ChronoUnit.YEARS.between(dataNascimento, hoje);
         };
     }
 }
