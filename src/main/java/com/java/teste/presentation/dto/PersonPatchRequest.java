@@ -1,11 +1,17 @@
 package com.java.teste.presentation.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDate;
 
 public class PersonPatchRequest {
 
     private String nome;
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataNascimento;
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataAdmissao;
 
     public PersonPatchRequest(String nome, LocalDate dataNascimento, LocalDate dataAdmissao) {
