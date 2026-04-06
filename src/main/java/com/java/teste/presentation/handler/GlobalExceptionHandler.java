@@ -1,13 +1,17 @@
 package com.java.teste.presentation.handler;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.java.teste.domain.exception.PersonAlreadyExistsException;
 import com.java.teste.domain.exception.PersonNotFoundException;
 import com.java.teste.presentation.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import java.time.LocalDate;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -30,6 +34,25 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        String message = "Corpo da requisição inválido ou malformado.";
+
+        Throwable cause = ex.getCause();
+        if (cause instanceof InvalidFormatException invalidFormat
+                && invalidFormat.getTargetType() != null
+                && LocalDate.class.isAssignableFrom(invalidFormat.getTargetType())) {
+            String field = invalidFormat.getPath().isEmpty()
+                    ? "data"
+                    : invalidFormat.getPath().get(invalidFormat.getPath().size() - 1).getFieldName();
+            message = "Formato de data inválido para o campo '" + field + "': '"
+                    + invalidFormat.getValue() + "'. Utilize o formato dd/MM/yyyy.";
+        }
+
+        ErrorResponse error = ErrorResponse.of(HttpStatus.BAD_REQUEST.value(), "Bad Request", message);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
