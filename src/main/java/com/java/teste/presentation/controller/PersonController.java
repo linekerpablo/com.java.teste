@@ -1,12 +1,15 @@
 package com.java.teste.presentation.controller;
 
 import com.java.teste.application.usecase.CreatePersonUseCase;
+import com.java.teste.application.usecase.DeletePersonUseCase;
 import com.java.teste.application.usecase.ListPersonsUseCase;
 import com.java.teste.presentation.dto.PersonRequest;
 import com.java.teste.presentation.dto.PersonResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,10 +23,14 @@ public class PersonController {
 
     private final ListPersonsUseCase listPersonsUseCase;
     private final CreatePersonUseCase createPersonUseCase;
+    private final DeletePersonUseCase deletePersonUseCase;
 
-    public PersonController(ListPersonsUseCase listPersonsUseCase, CreatePersonUseCase createPersonUseCase) {
+    public PersonController(ListPersonsUseCase listPersonsUseCase,
+                            CreatePersonUseCase createPersonUseCase,
+                            DeletePersonUseCase deletePersonUseCase) {
         this.listPersonsUseCase = listPersonsUseCase;
         this.createPersonUseCase = createPersonUseCase;
+        this.deletePersonUseCase = deletePersonUseCase;
     }
 
     @GetMapping
@@ -31,7 +38,6 @@ public class PersonController {
         List<PersonResponse> response = listPersonsUseCase.execute().stream()
                 .map(PersonResponse::from)
                 .toList();
-
         return ResponseEntity.ok(response);
     }
 
@@ -39,5 +45,11 @@ public class PersonController {
     public ResponseEntity<PersonResponse> create(@RequestBody PersonRequest request) {
         PersonResponse response = PersonResponse.from(createPersonUseCase.execute(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        deletePersonUseCase.execute(id);
+        return ResponseEntity.noContent().build();
     }
 }
