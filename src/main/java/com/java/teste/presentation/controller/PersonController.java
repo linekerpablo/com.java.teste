@@ -3,13 +3,16 @@ package com.java.teste.presentation.controller;
 import com.java.teste.application.usecase.CreatePersonUseCase;
 import com.java.teste.application.usecase.DeletePersonUseCase;
 import com.java.teste.application.usecase.ListPersonsUseCase;
+import com.java.teste.application.usecase.PatchPersonUseCase;
 import com.java.teste.application.usecase.UpdatePersonUseCase;
+import com.java.teste.presentation.dto.PersonPatchRequest;
 import com.java.teste.presentation.dto.PersonRequest;
 import com.java.teste.presentation.dto.PersonResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,15 +30,18 @@ public class PersonController {
     private final CreatePersonUseCase createPersonUseCase;
     private final DeletePersonUseCase deletePersonUseCase;
     private final UpdatePersonUseCase updatePersonUseCase;
+    private final PatchPersonUseCase patchPersonUseCase;
 
     public PersonController(ListPersonsUseCase listPersonsUseCase,
                             CreatePersonUseCase createPersonUseCase,
                             DeletePersonUseCase deletePersonUseCase,
-                            UpdatePersonUseCase updatePersonUseCase) {
+                            UpdatePersonUseCase updatePersonUseCase,
+                            PatchPersonUseCase patchPersonUseCase) {
         this.listPersonsUseCase = listPersonsUseCase;
         this.createPersonUseCase = createPersonUseCase;
         this.deletePersonUseCase = deletePersonUseCase;
         this.updatePersonUseCase = updatePersonUseCase;
+        this.patchPersonUseCase = patchPersonUseCase;
     }
 
     @GetMapping
@@ -61,6 +67,12 @@ public class PersonController {
     @PutMapping("/{id}")
     public ResponseEntity<PersonResponse> update(@PathVariable Long id, @RequestBody PersonRequest request) {
         PersonResponse response = PersonResponse.from(updatePersonUseCase.execute(id, request));
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<PersonResponse> patch(@PathVariable Long id, @RequestBody PersonPatchRequest request) {
+        PersonResponse response = PersonResponse.from(patchPersonUseCase.execute(id, request));
         return ResponseEntity.ok(response);
     }
 }
