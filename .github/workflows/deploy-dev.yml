@@ -2,7 +2,7 @@ name: CI/CD — Desenvolvimento
 
 on:
   push:
-    branches: [dev, 'feature/**']
+    branches: [dev]
 
 jobs:
   test:
